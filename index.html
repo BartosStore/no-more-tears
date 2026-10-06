@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>No More Tears — Charge Grid</title>
-  <meta name="description" content="No More Tears elektrifikuje celou Českou republiku. Charge Grid — realtime data, historie a správa dobíjecích stanic na jednom místě.">
+  <meta name="description" content="No More Tears elektrifikuje Česko. Charge Grid je dispečink pro síť nabíjecích stanic — živá telemetrie, historie, relace, alarmy a administrace. Vyzkoušejte živé demo.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -28,11 +28,11 @@
         <a href="#mapa">Mapa sítě</a>
         <a href="#tym">Tým</a>
         <a href="#faq">FAQ</a>
-        <a href="#kontakt" class="btn btn--small btn--ghost nav__cta-mobile">Kontakt</a>
+        <a href="https://chargegrid.bartosdev.cz/" class="btn btn--small btn--primary nav__cta-mobile" target="_blank" rel="noopener">Živé demo ↗</a>
       </nav>
       <div class="nav__actions">
-        <button class="btn btn--small btn--ghost" data-open-login>Přihlásit</button>
-        <a href="#kontakt" class="btn btn--small btn--primary">Chci demo</a>
+        <a href="https://chargegrid.bartosdev.cz/" class="btn btn--small btn--ghost" target="_blank" rel="noopener">Přihlásit</a>
+        <a href="https://chargegrid.bartosdev.cz/" class="btn btn--small btn--primary" target="_blank" rel="noopener">Živé demo ↗</a>
         <button class="nav__toggle" id="navToggle" aria-label="Otevřít menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -54,15 +54,15 @@
           </h1>
           <p class="hero__lead">
             Stavíme dobíjecí stanice od Aše po Jablunkov a&nbsp;propojujeme je do jedné chytré sítě.
-            <strong>Charge Grid</strong> sbírá data z&nbsp;každého konektoru v&nbsp;reálném čase — pro techniky, provozovatele i&nbsp;řidiče.
+            <strong>Charge Grid</strong> je náš dispečink: živá telemetrie, historie provozu, relace i&nbsp;alarmy ze všech stanic na jedné obrazovce.
           </p>
           <div class="hero__ctas">
-            <a href="#produkt" class="btn btn--primary">Prozkoumat Charge Grid</a>
-            <a href="#mapa" class="btn btn--ghost">Najít nabíječku</a>
+            <a href="https://chargegrid.bartosdev.cz/" class="btn btn--primary" target="_blank" rel="noopener">Vyzkoušet živé demo ↗</a>
+            <a href="#produkt" class="btn btn--ghost">Prohlédnout Charge Grid</a>
           </div>
           <ul class="hero__trust">
-            <li><span>99,7&nbsp;%</span> dostupnost sítě</li>
-            <li><span>&lt; 1 s</span> latence dat</li>
+            <li><span>98&nbsp;%</span> průměrná dostupnost</li>
+            <li><span>2 s</span> živá data</li>
             <li><span>24/7</span> dohled</li>
           </ul>
         </div>
@@ -143,104 +143,74 @@
           <span class="eyebrow">Náš produkt</span>
           <h2 class="section__title">Charge Grid</h2>
           <p class="section__lead">
-            Jedna platforma, která sbírá data ze všech našich stanic a&nbsp;mění je v&nbsp;přehledné rozhodnutí.
-            Vyzkoušejte si živé demo níže.
+            Dispečink, ve kterém operátoři vidí celou síť nabíjecích stanic v&nbsp;reálném čase — od výkonu jednotlivého
+            konektoru po tržby za celý měsíc. Prohlédněte si skutečné obrazovky, nebo si aplikaci rovnou vyzkoušejte.
           </p>
         </div>
 
         <div class="dashboard reveal" id="dashboard">
           <div class="dashboard__bar">
             <div class="dashboard__dots"><span></span><span></span><span></span></div>
-            <div class="dashboard__url">app.chargegrid.cz/<span id="dashPath">realtime</span></div>
-            <div class="dashboard__user" id="dashUser">Host</div>
+            <div class="dashboard__url">chargegrid.bartosdev.cz<span id="dashPath">/</span></div>
+            <a class="dashboard__user" href="https://chargegrid.bartosdev.cz/" target="_blank" rel="noopener">Otevřít ↗</a>
           </div>
 
           <div class="dashboard__body">
-            <aside class="dashboard__side" role="tablist" aria-label="Sekce dashboardu">
-              <button class="dash-tab is-active" role="tab" aria-selected="true" data-tab="realtime">
-                <span>📈</span> Realtime
+            <aside class="dashboard__side" role="tablist" aria-label="Obrazovky Charge Grid">
+              <button class="dash-tab is-active" role="tab" aria-selected="true" data-shot="overview" data-path="/"
+                data-caption="Přehled sítě — kolik stanic je online, kolik právě nabíjí, aktuální odběr, energie za dnešek a nepotvrzené alarmy. Pod tím karta každé stanice s živým výkonem.">
+                <span>🧭</span> Přehled
               </button>
-              <button class="dash-tab" role="tab" aria-selected="false" data-tab="historie">
-                <span>🗂️</span> Historie
+              <button class="dash-tab" role="tab" aria-selected="false" data-shot="live" data-path="/live"
+                data-caption="Živá data — výkon, teplota a napětí až čtyř stanic v grafu za posledních 15 minut. Telemetrie přichází přes WebSocket každé 2 sekundy.">
+                <span>⚡</span> Živá data
               </button>
-              <button class="dash-tab" role="tab" aria-selected="false" data-tab="admin">
+              <button class="dash-tab" role="tab" aria-selected="false" data-shot="history" data-path="/history"
+                data-caption="Historie a analýzy — dodaná energie, počet relací, tržby a průměrná dostupnost za zvolené období, energie po dnech podle lokalit a nejvytíženější stanice.">
+                <span>📊</span> Historie
+              </button>
+              <button class="dash-tab" role="tab" aria-selected="false" data-shot="sessions" data-path="/sessions"
+                data-caption="Nabíjecí relace — každé dokončené nabíjení s délkou, energií, cenou a RFID identifikátorem. Tabulku lze filtrovat, řadit a exportovat.">
+                <span>🔌</span> Relace
+              </button>
+              <button class="dash-tab" role="tab" aria-selected="false" data-shot="alarms" data-path="/alarms"
+                data-caption="Alarmy — přehřátí konektoru, vybavení proudového chrániče, ztráta komunikace nebo výpadek stanice. Operátor alarm po prověření potvrdí.">
+                <span>🔔</span> Alarmy
+              </button>
+              <button class="dash-tab" role="tab" aria-selected="false" data-shot="station" data-path="/stations/st-19"
+                data-caption="Detail stanice — časová osa stavů, průběh výkonu a teploty včetně teplotního limitu, konektor, tarif a dostupnost za zvolené období.">
+                <span>📍</span> Detail stanice
+              </button>
+              <button class="dash-tab" role="tab" aria-selected="false" data-shot="admin" data-path="/admin"
+                data-caption="Administrace — správa stanic, lokalit, tarifů (cena za energii i za čas u stanice) a uživatelů dispečinku s jejich rolemi.">
                 <span>⚙️</span> Administrace
               </button>
             </aside>
 
             <div class="dashboard__main">
-              <!-- Realtime -->
-              <div class="dash-panel is-active" data-panel="realtime" role="tabpanel">
-                <div class="kpis">
-                  <div class="kpi"><span class="kpi__label">Aktuální výkon</span><span class="kpi__value" id="kpiPower">–</span></div>
-                  <div class="kpi"><span class="kpi__label">Nabíjí se</span><span class="kpi__value" id="kpiCharging">–</span></div>
-                  <div class="kpi"><span class="kpi__label">Volné body</span><span class="kpi__value" id="kpiFree">–</span></div>
-                  <div class="kpi"><span class="kpi__label">Poruchy</span><span class="kpi__value kpi__value--warn" id="kpiFault">–</span></div>
-                </div>
-                <div class="chart-card">
-                  <div class="chart-card__head">
-                    <span>Celkový odběr sítě (kW)</span>
-                    <span class="live-badge"><span class="live-dot"></span> LIVE</span>
-                  </div>
-                  <canvas id="liveChart" height="220"></canvas>
-                </div>
-                <div class="feed">
-                  <div class="feed__head">Události</div>
-                  <ul class="feed__list" id="eventFeed"></ul>
-                </div>
-              </div>
-
-              <!-- Historie -->
-              <div class="dash-panel" data-panel="historie" role="tabpanel" hidden>
-                <div class="history-controls">
-                  <span>Období:</span>
-                  <div class="seg" id="historyRange">
-                    <button class="is-active" data-range="7">7 dní</button>
-                    <button data-range="30">30 dní</button>
-                    <button data-range="12">12 měsíců</button>
-                  </div>
-                </div>
-                <div class="chart-card">
-                  <div class="chart-card__head"><span>Dodaná energie (MWh)</span><span id="historyTotal" class="muted"></span></div>
-                  <canvas id="historyChart" height="240"></canvas>
-                </div>
-                <div class="history-summary">
-                  <div><span class="muted">Průměrná relace</span><strong>27 min</strong></div>
-                  <div><span class="muted">Průměrně nabito</span><strong>31,4 kWh</strong></div>
-                  <div><span class="muted">Špička</span><strong>17:00–19:00</strong></div>
-                </div>
-              </div>
-
-              <!-- Administrace -->
-              <div class="dash-panel" data-panel="admin" role="tabpanel" hidden>
-                <div class="admin-locked" id="adminLocked">
-                  <div class="admin-locked__icon">🔒</div>
-                  <h3>Administrace je jen pro přihlášené</h3>
-                  <p class="muted">Servisní technici a&nbsp;provozovatelé zde spravují stanice, tarify a&nbsp;přístupy.</p>
-                  <button class="btn btn--primary btn--small" data-open-login>Přihlásit se (demo)</button>
-                </div>
-                <div class="admin-content" id="adminContent" hidden>
-                  <div class="admin-toolbar">
-                    <input type="search" id="adminSearch" placeholder="Hledat stanici nebo město…" aria-label="Hledat stanici">
-                    <select id="adminFilter" aria-label="Filtr stavu">
-                      <option value="all">Všechny stavy</option>
-                      <option value="free">Volné</option>
-                      <option value="charging">Nabíjí</option>
-                      <option value="fault">Porucha</option>
-                    </select>
-                  </div>
-                  <div class="table-wrap">
-                    <table class="table">
-                      <thead>
-                        <tr><th>ID</th><th>Lokalita</th><th>Výkon</th><th>Stav</th><th>Akce</th></tr>
-                      </thead>
-                      <tbody id="adminTable"></tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
+              <figure class="shot">
+                <a href="img/chargegrid/overview.jpg" id="shotLink" target="_blank" rel="noopener" title="Zobrazit v plné velikosti">
+                  <img src="img/chargegrid/overview.jpg" id="shotImg" width="2160" height="1350"
+                    alt="Charge Grid — přehled sítě nabíjecích stanic">
+                </a>
+                <figcaption id="shotCaption" class="muted">
+                  Přehled sítě — kolik stanic je online, kolik právě nabíjí, aktuální odběr, energie za dnešek a nepotvrzené alarmy. Pod tím karta každé stanice s živým výkonem.
+                </figcaption>
+              </figure>
             </div>
           </div>
+        </div>
+
+        <div class="demo-cta reveal">
+          <div class="demo-cta__text">
+            <h3>Vyzkoušejte si Charge Grid naživo</h3>
+            <p class="muted">
+              Přihlaste se jedním z&nbsp;demo účtů — <b>Administrátor</b>, <b>Operátor</b> nebo <b>Čtenář</b> — a&nbsp;uvidíte,
+              jak se aplikace mění podle role. Heslo je stejné jako uživatelské jméno, na přihlašovací obrazovce stačí účet jen vybrat.
+              Data jsou smyšlená a&nbsp;generují se přímo v&nbsp;prohlížeči.
+            </p>
+          </div>
+          <a href="https://chargegrid.bartosdev.cz/" class="btn btn--primary" target="_blank" rel="noopener">Spustit živé demo ↗</a>
         </div>
       </div>
     </section>
@@ -254,44 +224,44 @@
         </div>
         <div class="features__grid">
           <article class="feature reveal">
+            <div class="feature__icon">🧭</div>
+            <h3>Přehled sítě</h3>
+            <p>Stanice online, právě nabíjející, odběr sítě a&nbsp;energie za den. Filtr podle stavu, lokality i&nbsp;fulltextu.</p>
+          </article>
+          <article class="feature reveal">
             <div class="feature__icon">📡</div>
-            <h3>Realtime data</h3>
-            <p>Výkon, napětí, teplota i&nbsp;stav každého konektoru s&nbsp;latencí pod jednu sekundu.</p>
+            <h3>Živá telemetrie</h3>
+            <p>Výkon, napětí a&nbsp;teplota streamované přes WebSocket každé 2&nbsp;sekundy, plynule navázané na historii.</p>
           </article>
           <article class="feature reveal">
-            <div class="feature__icon">🗂️</div>
-            <h3>Kompletní historie</h3>
-            <p>Každá relace, každá kWh. Exporty do CSV a&nbsp;API pro účetnictví i&nbsp;audity.</p>
+            <div class="feature__icon">📊</div>
+            <h3>Historie a analýzy</h3>
+            <p>Energie po dnech podle lokalit, tržby, vytížení stanic a&nbsp;časová osa dostupnosti za libovolné období.</p>
           </article>
           <article class="feature reveal">
-            <div class="feature__icon">🔐</div>
-            <h3>Role a přihlašování</h3>
-            <p>SSO, dvoufaktorové ověření a&nbsp;jemná oprávnění pro techniky, provozovatele a&nbsp;partnery.</p>
-          </article>
-          <article class="feature reveal">
-            <div class="feature__icon">🧠</div>
-            <h3>Prediktivní údržba</h3>
-            <p>Model strojového učení odhalí opotřebený kabel nebo přehřátý modul týdny před poruchou.</p>
-          </article>
-          <article class="feature reveal">
-            <div class="feature__icon">🗺️</div>
-            <h3>Vyhledávání pro řidiče</h3>
-            <p>Veřejná mapa s&nbsp;dostupností v&nbsp;reálném čase, rezervací místa a&nbsp;plánovačem trasy.</p>
-          </article>
-          <article class="feature reveal">
-            <div class="feature__icon">☀️</div>
-            <h3>Zelený režim</h3>
-            <p>Chytré řízení výkonu podle přebytků z&nbsp;fotovoltaiky a&nbsp;aktuální ceny na spotovém trhu.</p>
-          </article>
-          <article class="feature reveal">
-            <div class="feature__icon">🚚</div>
-            <h3>Flotily</h3>
-            <p>Firemní účty, měsíční vyúčtování a&nbsp;přehled spotřeby po jednotlivých vozech.</p>
+            <div class="feature__icon">🔌</div>
+            <h3>Nabíjecí relace</h3>
+            <p>Každé nabíjení s&nbsp;energií, cenou a&nbsp;RFID identifikátorem. Filtrování, řazení a&nbsp;export dat.</p>
           </article>
           <article class="feature reveal">
             <div class="feature__icon">🔔</div>
-            <h3>Chytré notifikace</h3>
-            <p>Push, SMS i&nbsp;webhooky. Technik ví o&nbsp;poruše dřív, než stihne zazvonit telefon.</p>
+            <h3>Alarmy</h3>
+            <p>Přehřátí konektoru, proudový chránič, ztráta komunikace i&nbsp;výpadky. Rozlišení závažnosti a&nbsp;potvrzování operátorem.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature__icon">📍</div>
+            <h3>Detail stanice</h3>
+            <p>Časová osa stavů, průběh výkonu a&nbsp;teploty s&nbsp;limitem, konektor, tarif a&nbsp;dostupnost na jednom místě.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature__icon">⚙️</div>
+            <h3>Administrace</h3>
+            <p>Správa stanic, lokalit, uživatelů a&nbsp;tarifů — cena za energii i&nbsp;za čas strávený u&nbsp;stanice.</p>
+          </article>
+          <article class="feature reveal">
+            <div class="feature__icon">🔐</div>
+            <h3>Role, jazyky, motivy</h3>
+            <p>Role Administrátor, Operátor a&nbsp;Čtenář. Rozhraní v&nbsp;češtině i&nbsp;angličtině, světlý i&nbsp;tmavý režim.</p>
           </article>
         </div>
       </div>
@@ -338,21 +308,21 @@
           </div>
           <div class="aud-panel" data-aud-panel="servis" hidden>
             <ul class="checklist">
-              <li><strong>Okamžitý přehled poruch</strong> s&nbsp;prioritizací podle dopadu na provoz.</li>
-              <li><strong>Vzdálený restart a diagnostika</strong> — 70&nbsp;% problémů vyřešíte bez výjezdu.</li>
-              <li><strong>Servisní tikety</strong> s&nbsp;fotodokumentací a&nbsp;historií zásahů.</li>
-              <li><strong>Plánování údržby</strong> podle predikce, ne podle kalendáře.</li>
-              <li><strong>Reporty pro vedení</strong> — výnosy, vytížení a&nbsp;SLA na jedno kliknutí.</li>
+              <li><strong>Okamžitý přehled poruch</strong> — alarmy rozlišené podle závažnosti, s&nbsp;časem vzniku i&nbsp;trváním.</li>
+              <li><strong>Potvrzování alarmů</strong> — operátor po prověření alarm potvrdí, historie zůstává dohledatelná.</li>
+              <li><strong>Teplotní limity</strong> — v&nbsp;detailu stanice vidíte, jak blízko je konektor přehřátí.</li>
+              <li><strong>Relace a tržby</strong> — každá kWh a&nbsp;koruna podle stanice, lokality i&nbsp;období.</li>
+              <li><strong>Role a oprávnění</strong> — administrátor spravuje, operátor řeší, čtenář jen sleduje.</li>
             </ul>
             <div class="ticket" aria-hidden="true">
-              <div class="ticket__head"><span class="tag tag--fault">Priorita 1</span> #T-2291</div>
-              <h4>Brno — Olympia, CG-0377</h4>
-              <p class="muted">Teplota DC modulu 2 překročila 78&nbsp;°C. Model predikuje selhání ventilátoru do 9&nbsp;dnů.</p>
+              <div class="ticket__head"><span class="tag tag--fault">Kritický</span> E_OVERTEMP</div>
+              <h4>Obchodní centrum Jih, Brno — CG-BRN-04</h4>
+              <p class="muted">Přehřátí konektoru. Stanice odpojila nabíjení a&nbsp;dispečink vyvolal alarm.</p>
               <div class="ticket__steps">
-                <span class="done">Detekováno</span>
-                <span class="done">Přiřazeno: P. Kalous</span>
-                <span class="active">Na cestě</span>
-                <span>Vyřešeno</span>
+                <span class="done">Vznik alarmu</span>
+                <span class="done">Prověřeno</span>
+                <span class="active">Potvrzení</span>
+                <span>Uzavřeno</span>
               </div>
             </div>
           </div>
@@ -479,12 +449,16 @@
             <p>Ano. Vyhledávání, stav stanic i&nbsp;plánovač trasy jsou zdarma. Platíte jen za nabitou energii.</p>
           </details>
           <details>
+            <summary>Můžu si Charge Grid vyzkoušet?</summary>
+            <p>Ano, <a href="https://chargegrid.bartosdev.cz/" target="_blank" rel="noopener">živé demo</a> běží na chargegrid.bartosdev.cz. Vyberte demo účet Administrátor, Operátor nebo Čtenář — heslo je stejné jako uživatelské jméno. Všechna data v&nbsp;demu jsou smyšlená.</p>
+          </details>
+          <details>
             <summary>Umí Charge Grid pracovat i se stanicemi jiných výrobců?</summary>
             <p>Ano. Platforma podporuje standard OCPP 1.6 i&nbsp;2.0.1, takže připojíte prakticky jakoukoli moderní stanici.</p>
           </details>
           <details>
             <summary>Jak rychle se dozvím o poruše?</summary>
-            <p>Do jedné sekundy od výpadku telemetrie. U&nbsp;prediktivních upozornění typicky dny až týdny předem.</p>
+            <p>Telemetrie ze stanic přichází každé 2&nbsp;sekundy, takže alarm se v&nbsp;dispečinku objeví prakticky okamžitě — i&nbsp;s&nbsp;kódem poruchy a&nbsp;závažností.</p>
           </details>
           <details>
             <summary>Kde jsou uložena data?</summary>
@@ -509,6 +483,7 @@
             <li>📍 Komunardů 42, Praha 7 — Holešovice</li>
             <li>✉️ ahoj@nomoretears.cz</li>
             <li>📞 +420 800 000 042</li>
+            <li>⚡ <a href="https://chargegrid.bartosdev.cz/" target="_blank" rel="noopener">chargegrid.bartosdev.cz</a> — živé demo</li>
           </ul>
         </div>
         <form class="form reveal" id="contactForm" novalidate>
@@ -564,31 +539,9 @@
         <span class="logo__mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 2 4 14h6.5L9 22l11-13h-6.8z"/></svg></span>
         <span class="logo__text">No More Tears</span>
       </a>
-      <p class="muted">© <span id="year"></span> No More Tears s.r.o. · Charge Grid™ · Elektrifikujeme Česko.</p>
+      <p class="muted">© <span id="year"></span> No More Tears s.r.o. · <a href="https://chargegrid.bartosdev.cz/" target="_blank" rel="noopener">Charge Grid™</a> · Elektrifikujeme Česko.</p>
     </div>
   </footer>
-
-  <!-- ============ LOGIN MODAL ============ -->
-  <div class="modal" id="loginModal" hidden>
-    <div class="modal__backdrop" data-close-login></div>
-    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
-      <button class="modal__close" data-close-login aria-label="Zavřít">×</button>
-      <h3 id="loginTitle">Přihlášení do Charge Grid</h3>
-      <p class="muted">Demo účet je předvyplněný — stačí kliknout.</p>
-      <form id="loginForm">
-        <div class="form__row">
-          <label for="lEmail">E-mail</label>
-          <input id="lEmail" type="email" value="technik@nomoretears.cz" required>
-        </div>
-        <div class="form__row">
-          <label for="lPass">Heslo</label>
-          <input id="lPass" type="password" value="nomoretears" required>
-        </div>
-        <label class="checkbox"><input type="checkbox" checked> Ověřit pomocí 2FA</label>
-        <button class="btn btn--primary btn--block" type="submit">Přihlásit</button>
-      </form>
-    </div>
-  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 

@@ -250,52 +250,6 @@
     ctx.fillStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 12; ctx.fill(); ctx.shadowBlur = 0;
   }
 
-  function drawBarChart(canvas, values, labels, { height = 240 } = {}) {
-    const { ctx, w, h } = fitCanvas(canvas, height);
-    const pad = { l: 40, r: 4, t: 10, b: 24 };
-    const max = Math.max(...values) * 1.1;
-    const n = values.length;
-    const slot = (w - pad.l - pad.r) / n;
-    const bw = Math.max(3, slot * 0.62);
-
-    ctx.clearRect(0, 0, w, h);
-    ctx.font = "11px Inter, sans-serif";
-    ctx.fillStyle = COLORS.muted;
-    ctx.strokeStyle = COLORS.grid;
-    for (let i = 0; i <= 4; i++) {
-      const v = (max * i) / 4;
-      const yy = pad.t + (1 - v / max) * (h - pad.t - pad.b);
-      ctx.beginPath(); ctx.moveTo(pad.l, yy); ctx.lineTo(w - pad.r, yy); ctx.stroke();
-      ctx.fillText(fmt(v), 0, yy + 4);
-    }
-
-    const labelEvery = Math.ceil(n / Math.max(1, Math.floor((w - pad.l) / 42)));
-    values.forEach((v, i) => {
-      const bh = (v / max) * (h - pad.t - pad.b);
-      const bx = pad.l + i * slot + (slot - bw) / 2;
-      const by = h - pad.b - bh;
-      const grad = ctx.createLinearGradient(0, by, 0, h - pad.b);
-      grad.addColorStop(0, COLORS.accent);
-      grad.addColorStop(1, COLORS.accent2 + "66");
-      ctx.fillStyle = grad;
-      const r = Math.min(4, bw / 2);
-      ctx.beginPath();
-      ctx.moveTo(bx, h - pad.b);
-      ctx.lineTo(bx, by + r);
-      ctx.quadraticCurveTo(bx, by, bx + r, by);
-      ctx.lineTo(bx + bw - r, by);
-      ctx.quadraticCurveTo(bx + bw, by, bx + bw, by + r);
-      ctx.lineTo(bx + bw, h - pad.b);
-      ctx.fill();
-      if (i % labelEvery === 0) {
-        ctx.fillStyle = COLORS.muted;
-        ctx.textAlign = "center";
-        ctx.fillText(labels[i], bx + bw / 2, h - 6);
-        ctx.textAlign = "left";
-      }
-    });
-  }
-
   /* ---------------- Data stanic ---------------- */
   const LOCATIONS = [
     ["Praha", "Chodov", 14.49, 50.03], ["Praha", "Letňany", 14.52, 50.13], ["Praha", "Smíchov", 14.40, 50.07],
@@ -369,8 +323,6 @@
     }
   }, 1500);
 
-  const totalKw = () => stations.reduce((sum, s) => sum + s.kw, 0);
-
   /* ---------------- Hero mini karty ---------------- */
   (function heroCards() {
     const powerEl = $("#heroPower");
@@ -395,219 +347,33 @@
     window.addEventListener("resize", () => drawLineChart(spark, series, { height: 80 }));
   })();
 
-  /* ---------------- Dashboard ---------------- */
-  const dashTabs = $$(".dash-tab");
-  const dashPanels = $$(".dash-panel");
-  const dashPath = $("#dashPath");
+  /* ---------------- Charge Grid: galerie obrazovek ---------------- */
+  (function productShots() {
+    const tabs = $$(".dash-tab");
+    const img = $("#shotImg");
+    const link = $("#shotLink");
+    const caption = $("#shotCaption");
+    const dashPath = $("#dashPath");
 
-  function activateTab(name) {
-    dashTabs.forEach((t) => {
-      const on = t.dataset.tab === name;
-      t.classList.toggle("is-active", on);
-      t.setAttribute("aria-selected", String(on));
-    });
-    dashPanels.forEach((p) => (p.hidden = p.dataset.panel !== name));
-    dashPath.textContent = name;
-    if (name === "historie") renderHistory();
-    if (name === "realtime") drawLive();
-  }
-  dashTabs.forEach((t) => t.addEventListener("click", () => activateTab(t.dataset.tab)));
+    // Přednačtení, ať přepínání neblikne
+    tabs.forEach((t) => { new Image().src = `img/chargegrid/${t.dataset.shot}.jpg`; });
 
-  // --- Realtime ---
-  const liveCanvas = $("#liveChart");
-  const liveData = Array.from({ length: 60 }, () => totalKw() * (0.95 + Math.random() * 0.1));
-  const kpi = { power: $("#kpiPower"), charging: $("#kpiCharging"), free: $("#kpiFree"), fault: $("#kpiFault") };
-  const feed = $("#eventFeed");
-
-  function drawLive() {
-    if (!liveCanvas.offsetParent) return;
-    drawLineChart(liveCanvas, liveData, { height: 220, unit: "kW" });
-  }
-
-  function updateKpis() {
-    const counts = { free: 0, charging: 0, fault: 0 };
-    stations.forEach((s) => counts[s.status]++);
-    kpi.power.textContent = fmt(totalKw()) + " kW";
-    kpi.charging.textContent = counts.charging;
-    kpi.free.textContent = counts.free;
-    kpi.fault.textContent = counts.fault;
-  }
-
-  function pushEvent({ station: s, next }) {
-    const msgs = {
-      charging: `zahájeno nabíjení <span class="tag tag--charging">${s.kw} kW</span>`,
-      free: "relace ukončena, bod volný",
-      fault: `<span class="tag tag--fault">Porucha</span> technik upozorněn`,
-    };
-    const li = document.createElement("li");
-    const time = new Date().toLocaleTimeString("cs-CZ");
-    li.innerHTML = `<time>${time}</time><span><b>${s.id}</b> ${s.city} — ${s.spot}: ${msgs[next]}</span>`;
-    feed.prepend(li);
-    while (feed.children.length > 5) feed.lastChild.remove();
-  }
-
-  // Úvodní události, ať feed není prázdný
-  stations.slice(0, 4).forEach((s) => s.status !== "fault" && pushEvent({ station: s, next: s.status }));
-
-  updateKpis();
-  drawLive();
-  setInterval(() => {
-    liveData.push(totalKw() + (Math.random() - 0.5) * 60);
-    liveData.shift();
-    drawLive();
-  }, 1000);
-
-  onStationsChange((e) => {
-    updateKpis();
-    if (e) pushEvent(e);
-  });
-
-  // --- Historie ---
-  const historyCanvas = $("#historyChart");
-  const historyTotal = $("#historyTotal");
-  let historyRange = "7";
-  const DAYS = ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"];
-  const MONTHS = ["Led", "Úno", "Bře", "Dub", "Kvě", "Čvn", "Čvc", "Srp", "Zář", "Říj", "Lis", "Pro"];
-
-  function historyData(range) {
-    const r = mulberry32(Number(range) * 13);
-    if (range === "7") {
-      return { values: DAYS.map((_, i) => 92 + r() * 30 + (i >= 4 ? 18 : 0)), labels: DAYS, unit: "MWh" };
+    function activate(tab) {
+      tabs.forEach((t) => {
+        const on = t === tab;
+        t.classList.toggle("is-active", on);
+        t.setAttribute("aria-selected", String(on));
+      });
+      const src = `img/chargegrid/${tab.dataset.shot}.jpg`;
+      img.src = src;
+      img.alt = `Charge Grid — ${tab.textContent.trim()}`;
+      link.href = src;
+      caption.textContent = tab.dataset.caption;
+      dashPath.textContent = tab.dataset.path;
     }
-    if (range === "30") {
-      const today = new Date();
-      const labels = [], values = [];
-      for (let i = 29; i >= 0; i--) {
-        const d = new Date(today); d.setDate(today.getDate() - i);
-        labels.push(`${d.getDate()}.${d.getMonth() + 1}.`);
-        values.push(85 + r() * 40 + (29 - i) * 0.8);
-      }
-      return { values, labels, unit: "MWh" };
-    }
-    return { values: MONTHS.map((_, i) => 1400 + i * 210 + r() * 260), labels: MONTHS, unit: "MWh" };
-  }
+    tabs.forEach((t) => t.addEventListener("click", () => activate(t)));
+  })();
 
-  function renderHistory() {
-    if (!historyCanvas.offsetParent) return;
-    const { values, labels, unit } = historyData(historyRange);
-    drawBarChart(historyCanvas, values, labels);
-    historyTotal.textContent = `Celkem ${fmt(values.reduce((a, b) => a + b, 0))} ${unit}`;
-  }
-
-  $("#historyRange").addEventListener("click", (e) => {
-    const btn = e.target.closest("button");
-    if (!btn) return;
-    $$("#historyRange button").forEach((b) => b.classList.toggle("is-active", b === btn));
-    historyRange = btn.dataset.range;
-    renderHistory();
-  });
-
-  // --- Administrace & přihlášení ---
-  let loggedIn = false;
-  const loginModal = $("#loginModal");
-  const adminLocked = $("#adminLocked");
-  const adminContent = $("#adminContent");
-  const adminTable = $("#adminTable");
-  const adminSearch = $("#adminSearch");
-  const adminFilter = $("#adminFilter");
-  const dashUser = $("#dashUser");
-  let lastFocus = null;
-
-  function openLogin(trigger) {
-    if (loggedIn) return logout();
-    lastFocus = trigger;
-    loginModal.hidden = false;
-    document.body.style.overflow = "hidden";
-    setTimeout(() => $("#lEmail").focus(), 50);
-  }
-  function closeLogin() {
-    loginModal.hidden = true;
-    document.body.style.overflow = "";
-    lastFocus?.focus();
-  }
-  function setLoginButtons() {
-    $$(".nav__actions [data-open-login]").forEach((b) => (b.textContent = loggedIn ? "Odhlásit" : "Přihlásit"));
-  }
-  function logout() {
-    loggedIn = false;
-    dashUser.textContent = "Host";
-    dashUser.classList.remove("is-logged");
-    adminLocked.hidden = false;
-    adminContent.hidden = true;
-    setLoginButtons();
-    toast("Byli jste odhlášeni.");
-  }
-
-  $$("[data-open-login]").forEach((b) => b.addEventListener("click", () => openLogin(b)));
-  $$("[data-close-login]").forEach((b) => b.addEventListener("click", closeLogin));
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !loginModal.hidden) closeLogin();
-  });
-
-  $("#loginForm").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = $("#lEmail").value.trim();
-    loggedIn = true;
-    dashUser.textContent = email.split("@")[0] || "technik";
-    dashUser.classList.add("is-logged");
-    adminLocked.hidden = true;
-    adminContent.hidden = false;
-    setLoginButtons();
-    closeLogin();
-    renderAdmin();
-    activateTab("admin");
-    $("#produkt").scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth" });
-    toast("✅ Přihlášeno. Vítejte v administraci Charge Grid.");
-  });
-
-  function renderAdmin() {
-    if (!loggedIn) return;
-    const q = adminSearch.value.trim().toLowerCase();
-    const f = adminFilter.value;
-    const rows = stations
-      .filter((s) => (f === "all" || s.status === f))
-      .filter((s) => !q || `${s.id} ${s.city} ${s.spot}`.toLowerCase().includes(q));
-    adminTable.innerHTML = rows.length
-      ? rows.map((s) => `
-        <tr>
-          <td><b>${s.id}</b></td>
-          <td>${s.city} — ${s.spot}</td>
-          <td>${s.status === "charging" ? `${s.kw} / ` : ""}${s.power} kW</td>
-          <td><span class="tag tag--${s.status}">${STATUS_LABEL[s.status]}</span></td>
-          <td>
-            ${s.status === "fault"
-              ? `<button class="btn-link" data-action="restart" data-id="${s.id}">Vzdálený restart</button>`
-              : `<button class="btn-link" data-action="diag" data-id="${s.id}">Diagnostika</button>`}
-          </td>
-        </tr>`).join("")
-      : `<tr><td colspan="5" class="muted">Nic nenalezeno.</td></tr>`;
-  }
-
-  adminSearch.addEventListener("input", renderAdmin);
-  adminFilter.addEventListener("change", renderAdmin);
-  adminTable.addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-action]");
-    if (!btn) return;
-    const s = stations.find((st) => st.id === btn.dataset.id);
-    if (btn.dataset.action === "restart") {
-      btn.disabled = true;
-      btn.textContent = "Restartuji…";
-      setTimeout(() => {
-        const prev = s.status;
-        s.status = "free"; s.kw = 0;
-        emitChange({ station: s, prev, next: "free" });
-        toast(`🔄 ${s.id} restartována a znovu online.`);
-      }, 1400);
-    } else {
-      toast(`🩺 ${s.id}: napětí 400 V OK · teplota 41 °C · firmware 3.8.2`);
-    }
-  });
-  onStationsChange(() => {
-    // Nepřekreslovat během psaní akce restartu
-    if (!adminTable.querySelector("button:disabled")) renderAdmin();
-  });
-
-  window.addEventListener("resize", () => { drawLive(); renderHistory(); });
 
   /* ---------------- Pro koho (přepínač) ---------------- */
   const audSwitch = $(".audience__switch");
